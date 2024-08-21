@@ -1,6 +1,5 @@
-import agentpy as ap
+import agentpy as ap # type: ignore
 import numpy as np
-import seaborn as sns
 
 
 class WealthAgent(ap.Agent):
