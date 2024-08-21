@@ -70,6 +70,3 @@ parameters = {
     "steps": 100,
     "seed": 42,
 }
-
-model = WealthModel(parameters)
-results = model.run()
