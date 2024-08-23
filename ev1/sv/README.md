@@ -29,3 +29,7 @@ Run the project
 ```
 python3 tc2008b_server.py
 ```
+
+## CS File 
+
+For now, the .cs (or c# file) is there just for lookup purposes. It is not being used in the project, but it has to be implemented in Unity (eventually). 
