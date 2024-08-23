@@ -38,7 +38,7 @@ class WealthAgent(ap.Agent):
             rule_validation[2] = True
         return sum(rule_validation) == 3
 
-    def wealth_transfer(self):
+    def dewealth_transfer(self):
         self.beliefs["partner"].wealth += 1
         self.wealth -= 1
 
