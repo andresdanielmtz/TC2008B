@@ -1,5 +1,5 @@
 // TC2008B Modelación de Sistemas Multiagentes con gráficas computacionales
-// C# client to interact with Python server via POST
+// C# client to interact with Python server via POSTw
 // Sergio Ruiz-Loza, Ph.D. March 2021
 
 using System.Collections;
@@ -11,7 +11,12 @@ using UnityEngine.Networking;
 public class WebClient : MonoBehaviour
 {
     // IEnumerator - yield return
-    IEnumerator SendData(string data)
+    /// <summary>
+    /// Sends data to a specified URL using UnityWebRequest.
+    /// </summary>
+    /// <param name="data">The data to be sent.</param>
+    /// <returns>An IEnumerator for coroutine execution.</returns>
+    /// /// /// /// IEnumerator SendData(string data)
     {
         WWWForm form = new WWWForm();
         form.AddField("bundle", "the data");
@@ -55,7 +60,5 @@ public class WebClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     
-	 
     }
 }
