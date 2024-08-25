@@ -24,7 +24,7 @@ Retrieves the current state of the simulation.
 
 The response is a JSON object with the following structure:
 
-```
+```JSON
 {
   "robot_actions": [
     {
@@ -32,8 +32,8 @@ The response is a JSON object with the following structure:
       "action": string,
       "position": [int, int],
       "direction": [int, int],
-      "robot_grab_id": int or null,
-      "stack_coord": int or null (only present if action is "stack")
+      "box_id": int or null,
+      "stack_coord": [int, int] or null
     },
     ...
   ],
@@ -41,12 +41,13 @@ The response is a JSON object with the following structure:
     {
       "id": int,
       "position": [int, int],
-      "action": string,
+      "status": string,
       "num_boxes": int
     },
     ...
   ]
 }
+
 ```
 - `robot_actions`: An array of objects, each representing a robot's current state.
   - `id`: The unique identifier of the robot.
@@ -74,12 +75,13 @@ Updates the state of a specific robot in the simulation.
   - Content-Type: application/json
 - Body:
 
+```JSON
 {
   "id": int,
   "position": [int, int],
   "direction": [int, int]
 }
-
+```
 - `id`: The unique identifier of the robot to update.
 - `position`: An array of two integers representing the new x and y coordinates for the robot.
 - `direction`: An array of two integers representing the new facing direction for the robot.
@@ -93,7 +95,7 @@ The response structure is identical to the GET response, reflecting the updated 
 To interact with this API in Unity, you can use the `UnityWebRequest` class. Here are example snippets for both GET and POST requests:
 
 ### GET Request
-```
+```C#
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
@@ -124,7 +126,8 @@ public class SimulationClient : MonoBehaviour
 ```
 ### POST Request
 
-```IEnumerator UpdateRobotState(int robotId, Vector2Int newPosition, Vector2Int newDirection)
+```C#
+IEnumerator UpdateRobotState(int robotId, Vector2Int newPosition, Vector2Int newDirection)
 {
     string jsonBody = JsonUtility.ToJson(new 
     {
@@ -156,5 +159,3 @@ public class SimulationClient : MonoBehaviour
 }
 ```
 To use these methods, you can call them using `StartCoroutine(GetSimulationState())` or `StartCoroutine(UpdateRobotState(1, new Vector2Int(5, 5), new Vector2Int(0, 1)))` from another method in your Unity script.
-
-Remember to handle the JSON responses appropriately in your Unity client to update the game state and visualizations based on the received data.
