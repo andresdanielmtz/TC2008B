@@ -98,7 +98,7 @@ def get_robot_data(robot):
         "action": robot.action,
         "position": model.grid.positions[robot],
         "direction": robot.direction,
-        "robot_grab_id": robot.robot_grab_id,
+        "box_id": robot.robot_grab_id,
     }
     if robot.action == "stack":
         data["stack_coord"] = robot.stack_coord
@@ -125,7 +125,7 @@ def post_response(data):
     robot.action = "moved"  # Example action, can be customized
 
     # Perform a step in the simulation
-    model.step()
+
 
     # Prepare the response data
     response = {
@@ -134,17 +134,19 @@ def post_response(data):
             {
                 "id": box.id,
                 "position": model.grid.positions[box],
-                "action": "stacked" if box.stacked else "idle",
+                "status": "stacked" if box.stacked else "idle",
                 "num_boxes": box.boxStack,
             }
             for box in model.boxes
         ],
     }
 
+    model.step()
+
     return json.dumps(response)
 
 def get_response():
-    model.step()
+
     response = {
         "robot_actions": [get_robot_data(robot) for robot in model.robots],
         "box_positions": [
@@ -157,6 +159,7 @@ def get_response():
             for box in model.boxes
         ],
     }
+    model.step()
     return json.dumps(response)
 
 
@@ -346,9 +349,10 @@ class Robot(ap.Agent):
                     box_pile.add_box()
                     self.carryingBox = False
                     self.boxes_stacked += 1
-                    self.stack_coord = box_pos.id
+                    self.stack_coord = box_pile.id
                     self.just_stacked = True
-                    print(f"Robot at {self.model.grid.positions[self]} stacked a box at {box_pos}. Stack height: {box_pile.boxStack}. Total stacked: {self.boxes_stacked}")
+                    self.robot_grab_id = None
+                    print(f"Robot at {self.model.grid.positions[self]} stacked a box at {box_pile.pos}. Stack height: {box_pile.boxStack}. Total stacked: {self.boxes_stacked}")
                     return
         print(f"Robot at {self.model.grid.positions[self]} couldn't find a box to stack on.")
 
@@ -394,7 +398,7 @@ class Robot(ap.Agent):
 
 
     def turn_and_stack(self):
-        self.action = "turn"
+        
         for perception in self.per:
             if perception[0] == "BoxPile":
                 box_pos = perception[1]
@@ -404,6 +408,7 @@ class Robot(ap.Agent):
                 # Turn until facing the box
                 while self.direction != direction:
                     self.turn()
+                self.action = "turn"
                 
                 # Now that we're facing the box, stack it
                 box_agents = self.model.grid.agents[box_pos]
@@ -456,7 +461,7 @@ class Robot(ap.Agent):
 
 
     def turn(self):
-        self.action = "turn"
+        self.action = "turn 90"
         if self.direction == (-1, 0):  # North
             self.direction = (0, 1)  # East
         elif self.direction == (0, 1):  # East
@@ -468,7 +473,7 @@ class Robot(ap.Agent):
         print(f"Robot at {self.model.grid.positions[self]} turned to face {self.direction}")
 
     def random_turn(self):
-        self.action = "turn"
+        self.action = "turn random"
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # N, E, S, W
         self.direction = random.choice(directions)
         self.steps_since_last_turn = 0
