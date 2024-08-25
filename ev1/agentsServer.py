@@ -217,7 +217,7 @@ class BoxPile(ap.Agent):
             self.stacked = True
         else:
             self.stacked = False
-            print("Stack is full")
+            print("Stack is full. Stack height: " + str(self.boxStack))
 
     def step(self):
         if self.first_step:
