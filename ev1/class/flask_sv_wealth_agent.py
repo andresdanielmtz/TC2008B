@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from agentClasses import WealthModel, parameters, gini
+from .wealth_agent import WealthModel, parameters, gini
 
 app = Flask(__name__)
 

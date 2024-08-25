@@ -15,6 +15,7 @@ matplotlib==3.9.2
 multiprocess==0.70.16
 networkx==3.3
 numpy==2.1.0
+owlready2==0.46
 packaging==24.1
 pandas==2.2.2
 pillow==10.4.0
