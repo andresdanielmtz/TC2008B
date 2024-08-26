@@ -110,24 +110,19 @@ def post_response(data):
     new_position = data.get("position")
     direction = data.get("direction")
 
-    # Find the robot by ID
+
     robot = next((r for r in model.robots if r.id == robot_id), None)
     
     if robot is None:
         return json.dumps({"error": "Robot not found"}), 404
 
-    # Update the robot's position and direction
     if new_position:
-        model.grid.move_by(robot, tuple(new_position))  # Move robot to new position
+        model.grid.move_by(robot, tuple(new_position))  
     if direction:
-        robot.direction = tuple(direction)  # Update direction
-
-    robot.action = "moved"  # Example action, can be customized
-
-    # Perform a step in the simulation
+        robot.direction = tuple(direction)  
 
 
-    # Prepare the response data
+    # Response Data 
     response = {
         "robot_actions": [get_robot_data(robot) for robot in model.robots],
         "box_positions": [
@@ -261,8 +256,8 @@ class Robot(ap.Agent):
         self.boxes_grabbed = 0
         self.boxes_stacked = 0
         self.action = "setup"
-        self.robot_grab_id = None  # Add variable to store grabbed box ID
-        self.stack_coord = None  # Add variable to store stacking coordinates
+        self.robot_grab_id = None  
+        self.stack_coord = None  
         self.just_stacked = False
         self.actions = (
             self.move_and_grab,
@@ -273,7 +268,7 @@ class Robot(ap.Agent):
             self.move_e,
             self.move_s,
             self.move_w,
-            self.stack_box,  # New action
+            self.stack_box,  
         )
         self.rules = (
             self.rule_move_and_grab,
@@ -284,7 +279,7 @@ class Robot(ap.Agent):
             self.rule_move_e,
             self.rule_move_s,
             self.rule_move_w,
-            self.rule_stack_box,  # New rule
+            self.rule_stack_box,  
         )
     def rule_stack_box(self, act):
         return act == self.stack_box and self.carryingBox and any(p[0] == "BoxPile" for p in self.per)
@@ -359,7 +354,6 @@ class Robot(ap.Agent):
                 self.steps_since_last_turn += 1
                 print(f"Robot at {self.model.grid.positions[self]} moved forward to {front_pos}")
             elif self.carryingBox and any(isinstance(agent, BoxPile) for agent in front_agents):
-                # Stack the box if carrying one and colliding with another box
                 self.stack_box()
             else:
                 # Turn if there's an obstacle that's not a box
@@ -406,12 +400,11 @@ class Robot(ap.Agent):
                 box_agents = self.model.grid.agents[box_pos]
                 box = next((agent for agent in box_agents if isinstance(agent, BoxPile)), None)
                 if box:
-                    # Instead of using a Stack agent, we can just mark the position as occupied
+
                     self.model.grid.remove_agents(box)
                     self.action = "stack"
                     self.model.boxes.remove(box)
-                    # Mark the position as occupied by a stack
-                    self.model.grid.add_agents([], positions=[box_pos])  # No agent, just marking the position
+                    self.model.grid.add_agents([], positions=[box_pos])
                     self.carryingBox = False
                     print(f"Robot at {current_pos} created a stack at {box_pos}")
                 return
