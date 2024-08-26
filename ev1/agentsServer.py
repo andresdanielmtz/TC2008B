@@ -167,39 +167,31 @@ def get_response():
 #
 #
 onto = get_ontology("file://onto.owl")
-# ONTOLOGIA
-# onto.delete()
-with onto:
 
+with onto:
     class Entity(Thing):
         pass
 
-    class Vaccum(Entity):
+    class Robot(Entity):
         pass
-
-    class Dirt(Entity):
-        pass
-
     class Box(Entity):
-        boxStack = 1
+        pass
+    class BoxPile(Box):
         pass
 
-    class Place(Thing):
-        pass
-
-    class Position(Thing):
-        pass
-
-    class has_place(ObjectProperty, FunctionalProperty):
+    class has_position(DataProperty):
         domain = [Entity]
-        range = [Place]
-
-    class has_position(DataProperty, FunctionalProperty):
-        domain = [Place]
         range = [str]
 
-        pass
+    class has_action(DataProperty):
+        domain = [Robot]
+        range = [str]
 
+    class has_grabbed_box(ObjectProperty):
+        domain = [Robot]
+        range = [Box]
+
+onto.save(file="onto.owl", format = "rdfxml")
 
 class BoxPile(ap.Agent):
 
