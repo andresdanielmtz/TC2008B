@@ -25,58 +25,20 @@ class Server(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        logging.info(
-            "GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers)
-        )
+        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
         response_data = get_response()
         self._set_response()
-        
-        # Format the JSON for pretty printing
-        formatted_json = json.dumps(json.loads(response_data), indent=2)
-        
-        # Wrap the JSON in HTML for better browser display
-        html_response = f"""
-        <html>
-        <head>
-            <title>JSON Response</title>
-        </head>
-        <body>
-            <pre>{formatted_json}</pre>
-        </body>
-        </html>
-        """
-        
-        self.wfile.write(html_response.encode("utf-8"))
+        self.wfile.write(response_data.encode('utf-8'))
 
     def do_POST(self):
-        content_length = int(self.headers["Content-Length"])
+        content_length = int(self.headers['Content-Length'])
         post_data = json.loads(self.rfile.read(content_length))
-        logging.info(
-            "POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
-            str(self.path),
-            str(self.headers),
-            json.dumps(post_data),
-        )
+        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                     str(self.path), str(self.headers), json.dumps(post_data))
 
         response_data = post_response(post_data)
         self._set_response()
-        
-        # Format the JSON for pretty printing
-        formatted_json = json.dumps(json.loads(response_data), indent=2)
-        
-        # Wrap the JSON in HTML for better browser display
-        html_response = f"""
-        <html>
-        <head>
-            <title>JSON Response</title>
-        </head>
-        <body>
-            <pre>{formatted_json}</pre>
-        </body>
-        </html>
-        """
-        
-        self.wfile.write(html_response.encode("utf-8"))
+        self.wfile.write(response_data.encode('utf-8'))
 
 
 def run(server_class=HTTPServer, handler_class=Server, port=8585):
